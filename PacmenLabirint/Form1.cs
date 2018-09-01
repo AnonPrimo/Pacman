@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace PacmenLabirint
 {
@@ -28,6 +29,10 @@ namespace PacmenLabirint
 
         Rectangle [,]rect = new Rectangle[10,10];
         Graphics g;
+        Bitmap pacman_0;
+        Bitmap pacman_1;
+        Bitmap pacman_2;
+        Bitmap pacman_3;
 
         Rectangle pacmen;
 
@@ -39,8 +44,13 @@ namespace PacmenLabirint
 
             this.g = this.CreateGraphics();
             r = new Random();
-            pacmen = new Rectangle(50 + 5, 50 + 5, 35, 35);
+            pacmen = new Rectangle(50 + 5, 50 + 5, 30, 30);
+            pacman_0 = Properties.Resources.sprite_0;
+            pacman_1 = Properties.Resources.sprite_1;
+            pacman_2 = Properties.Resources.sprite_2;
+            pacman_3 = Properties.Resources.sprite_3;
 
+            g.DrawImage(pacman_0, pacmen.X, pacmen.Y);
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
@@ -76,48 +86,60 @@ namespace PacmenLabirint
                     {
                         g.FillRectangle(Brushes.Orange, rect[i, j]);
                     }
-                    //if (ar[i, j] == 2)
-                    //    pacmen = new Rectangle(i * 50 + 5, j * 50 + 5, 35, 35);
-
+                   
                 }
             }
 
-
+            timer1.Interval = 1;
+            timer1.Enabled = true;
 
             g.FillRectangle(Brushes.Yellow, pacmen);
-
+            g.DrawImage(pacman_0, pacmen.X, pacmen.Y);
         }
 
         private void Form1_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (e.KeyChar == '2')
-                pacmen.Y += 1;
-
-            if (e.KeyChar == '8')
-                pacmen.Y -= 1;
-
-            if (e.KeyChar == '4')
-                pacmen.X -= 1;
-                
-            if (e.KeyChar == '6')               
-                pacmen.X += 1;
-
-            if (Check())
-            {
+            //if(e.KeyChar == '2' || e.KeyChar == '6' || e.KeyChar == '4' || e.KeyChar == '8')
+            //while (!Check())
+            //{
+                   switch (e.KeyChar)
+                    {
+                        case '2': 
+                           pacmen.Y += 1;
+                            break;
+                        case '8':
+                            pacmen.Y -= 1;
+                            break;
+                        case '4':
+                            pacmen.X -= 1;
+                            break;
+                        case '6':
+                            pacmen.X += 1;
+                            break;
+                        default:
+                            break;
+                    }
+                    
+                if (Check())
+             {
                 if (e.KeyChar == '2')
-                    pacmen.Y -= 2;
+                    pacmen.Y -= 1;
 
                 if (e.KeyChar == '8')
-                    pacmen.Y += 2;
+                    pacmen.Y += 1;
 
                 if (e.KeyChar == '4')
-                    pacmen.X += 2;
+                    pacmen.X += 1;
 
                 if (e.KeyChar == '6')
-                    pacmen.X -= 2;
-            }
+                    pacmen.X -= 1;
+                   // break;
+             }
+                    Thread.Sleep(20);
+                g.DrawImage(pacman_0, pacmen.X, pacmen.Y);
+                
+           // }
 
-            Refresh();
         }
 
 
@@ -130,17 +152,22 @@ namespace PacmenLabirint
                 {
                     if (ar[i, j] == 1)
                     {
-                        if ((Math.Abs((pacmen.X + 15) - (rect[i, j].X + 25)) < 40) && (Math.Abs((pacmen.Y + 15) - (rect[i, j].Y + 25)) < 40))
+                        if ((Math.Abs((pacmen.X + 15) - (rect[i, j].X + 25)) < 40) && (Math.Abs((pacmen.Y + 15) - (rect[i, j].Y + 25)) < 40) ||
+                            pacmen.Y == 0 || pacmen.Y + 30 == 500 || pacmen.X == 0 || pacmen.X + 30 == 500)
                             return true;
-                            //if ((pacmen.X > rect[i, j].X + 50) || (pacmen.X + 50 < rect[i, j].X) || (pacmen.Y < rect[i, j].Y + 50) || (pacmen.Y + 50 > rect[i, j].Y))
-
-
-                            
                     }  
                 }
             }
 
             return false; //врізається 
+
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+
+               // g.DrawImage(pacman_0, pacmen.X, pacmen.Y);
+           
 
         }
     }
